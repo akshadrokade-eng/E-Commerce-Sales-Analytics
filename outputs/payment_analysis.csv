@@ -1,0 +1,4 @@
+payment_method,Order_Count,Total_Revenue,Avg_Revenue_Per_Order
+Card,2270,2366248.2,1042.4
+COD,1774,1788408.44,1008.12
+Wallet,956,955119.1,999.08

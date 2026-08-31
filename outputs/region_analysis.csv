@@ -1,0 +1,5 @@
+region,Total_Revenue,Total_Quantity,Order_Count,Avg_Delivery_Days,Avg_Customer_Rating
+West,1345582.16,5260,1289,6.08,2.96
+North,1281508.45,5164,1276,6.12,2.99
+South,1246640.9,4884,1208,6.17,2.97
+East,1236044.23,4916,1227,6.1,2.97

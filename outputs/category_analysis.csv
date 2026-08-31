@@ -1,0 +1,5 @@
+product_category,Total_Revenue,Total_Quantity,Avg_Unit_Price,Avg_Discount,Avg_Customer_Rating,Order_Count
+Electronics,1829899.22,7109,314.9,0.18,2.95,1777
+Clothing,1531931.72,6171,304.01,0.18,3.01,1531
+Home,982083.92,3949,306.26,0.18,2.94,969
+Beauty,765860.88,2995,304.71,0.18,3.01,723
