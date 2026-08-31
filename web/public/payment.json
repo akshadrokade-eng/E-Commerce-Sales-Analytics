@@ -1,0 +1,26 @@
+[
+  {
+    "payment_method": "COD",
+    "orders": 1774,
+    "revenue": 1788408.44,
+    "percentage_of_orders": 35.48,
+    "percentage_of_revenue": 35.0,
+    "average_order_revenue": 1008.12
+  },
+  {
+    "payment_method": "Card",
+    "orders": 2270,
+    "revenue": 2366248.2,
+    "percentage_of_orders": 45.4,
+    "percentage_of_revenue": 46.31,
+    "average_order_revenue": 1042.4
+  },
+  {
+    "payment_method": "Wallet",
+    "orders": 956,
+    "revenue": 955119.1,
+    "percentage_of_orders": 19.12,
+    "percentage_of_revenue": 18.69,
+    "average_order_revenue": 999.08
+  }
+]

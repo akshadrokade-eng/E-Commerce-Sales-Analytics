@@ -31,3 +31,14 @@ Desktop.ini
 # Power BI
 *.pbix
 *.pbit
+
+# Next.js
+web/.next/
+web/out/
+web/build/
+web/.turbo/
+web/.eslintcache
+
+# Node
+node_modules/
+web/node_modules/
