@@ -35,9 +35,10 @@ print(f"Loaded {len(df)} rows from database")
 
 
 # ============================================
-# 2. CREATE WEB/DATA DIRECTORY
+# 2. CREATE WEB/DATA AND WEB/PUBLIC/DATA DIRECTORIES
 # ============================================
 os.makedirs("web/data", exist_ok=True)
+os.makedirs("web/public/data", exist_ok=True)
 
 
 # ============================================
@@ -60,6 +61,9 @@ summary = {
 }
 
 with open("web/data/summary.json", "w") as f:
+    json.dump(summary, f, indent=2)
+
+with open("web/public/data/summary.json", "w") as f:
     json.dump(summary, f, indent=2)
 
 print(f"  Total Revenue: {summary['total_revenue']:,.2f}")
@@ -87,6 +91,9 @@ category_data = category_df.to_dict("records")
 with open("web/data/category.json", "w") as f:
     json.dump(category_data, f, indent=2)
 
+with open("web/public/data/category.json", "w") as f:
+    json.dump(category_data, f, indent=2)
+
 print(f"  Categories: {len(category_data)}")
 
 
@@ -107,6 +114,9 @@ region_df = df.groupby("region").agg(
 region_data = region_df.to_dict("records")
 
 with open("web/data/region.json", "w") as f:
+    json.dump(region_data, f, indent=2)
+
+with open("web/public/data/region.json", "w") as f:
     json.dump(region_data, f, indent=2)
 
 print(f"  Regions: {len(region_data)}")
@@ -133,6 +143,9 @@ payment_data = payment_df.to_dict("records")
 with open("web/data/payment.json", "w") as f:
     json.dump(payment_data, f, indent=2)
 
+with open("web/public/data/payment.json", "w") as f:
+    json.dump(payment_data, f, indent=2)
+
 print(f"  Payment Methods: {len(payment_data)}")
 
 
@@ -153,6 +166,9 @@ yearly_df = yearly_df.sort_values("year")
 yearly_data = yearly_df.to_dict("records")
 
 with open("web/data/yearly.json", "w") as f:
+    json.dump(yearly_data, f, indent=2)
+
+with open("web/public/data/yearly.json", "w") as f:
     json.dump(yearly_data, f, indent=2)
 
 print(f"  Years: {len(yearly_data)}")
@@ -184,6 +200,9 @@ monthly_data = monthly_df.to_dict("records")
 with open("web/data/monthly.json", "w") as f:
     json.dump(monthly_data, f, indent=2)
 
+with open("web/public/data/monthly.json", "w") as f:
+    json.dump(monthly_data, f, indent=2)
+
 print(f"  Months: {len(monthly_data)}")
 
 
@@ -206,6 +225,9 @@ customer_df = customer_df.sort_values("total_revenue", ascending=False)
 customer_data = customer_df.to_dict("records")
 
 with open("web/data/customers.json", "w") as f:
+    json.dump(customer_data, f, indent=2)
+
+with open("web/public/data/customers.json", "w") as f:
     json.dump(customer_data, f, indent=2)
 
 print(f"  Customers: {len(customer_data)}")
@@ -252,6 +274,9 @@ operations = {
 with open("web/data/operations.json", "w") as f:
     json.dump(operations, f, indent=2)
 
+with open("web/public/data/operations.json", "w") as f:
+    json.dump(operations, f, indent=2)
+
 print(f"  Operations data generated")
 
 
@@ -286,6 +311,9 @@ relationships = {
 }
 
 with open("web/data/relationships.json", "w") as f:
+    json.dump(relationships, f, indent=2)
+
+with open("web/public/data/relationships.json", "w") as f:
     json.dump(relationships, f, indent=2)
 
 print(f"  Relationships data generated")
