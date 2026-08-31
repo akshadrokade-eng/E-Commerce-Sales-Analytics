@@ -8,7 +8,7 @@ export default function InsightsPage() {
     <div className="space-y-8">
       <Header
         title="Insights"
-        description="Data relationships and findings"
+        subtitle="Data relationships and findings"
       />
       <motion.div
         initial={{ opacity: 0, y: 20 }}

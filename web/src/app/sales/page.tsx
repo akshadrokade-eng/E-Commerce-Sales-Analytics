@@ -8,7 +8,7 @@ export default function SalesPage() {
     <div className="space-y-8">
       <Header
         title="Sales Analytics"
-        description="Detailed sales performance metrics"
+        subtitle="Detailed sales performance metrics"
       />
       <motion.div
         initial={{ opacity: 0, y: 20 }}

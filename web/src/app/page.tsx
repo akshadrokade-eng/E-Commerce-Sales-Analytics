@@ -3,6 +3,7 @@
 import Header from '@/components/layout/Header';
 import KPICard from '@/components/dashboard/KPICard';
 import InsightCard from '@/components/dashboard/InsightCard';
+import BusinessSnapshot from '@/components/dashboard/BusinessSnapshot';
 import RevenueTrend from '@/components/charts/RevenueTrend';
 import CategoryRevenue from '@/components/charts/CategoryRevenue';
 import RegionRevenue from '@/components/charts/RegionRevenue';
@@ -13,11 +14,6 @@ import {
   ShoppingCart,
   Users,
   TrendingUp,
-  Trophy,
-  MapPin,
-  CreditCard,
-  Star,
-  Truck,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
@@ -28,20 +24,7 @@ import {
   PaymentData,
   RelationshipsData,
 } from '@/types';
-
-function formatINR(value: number): string {
-  if (value >= 10000000) {
-    return `₹${(value / 10000000).toFixed(2)}Cr`;
-  }
-  if (value >= 100000) {
-    return `₹${(value / 100000).toFixed(2)}L`;
-  }
-  return `₹${value.toLocaleString('en-IN')}`;
-}
-
-function formatNumber(value: number): string {
-  return value.toLocaleString('en-IN');
-}
+import { formatINR, formatNumber } from '@/lib/utils/format';
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState<SummaryData | null>(null);
@@ -107,16 +90,13 @@ export default function DashboardPage() {
   const topCategory = [...categories].sort((a, b) => b.revenue - a.revenue)[0];
   const topRegion = [...regions].sort((a, b) => b.revenue - a.revenue)[0];
   const topPayment = [...payment].sort((a, b) => b.orders - a.orders)[0];
-  const topRatedCategory = [...categories].sort(
-    (a, b) => b.average_rating - a.average_rating
-  )[0];
-  const avgDelivery = summary.average_delivery_days;
 
   return (
     <div className="space-y-8">
       <Header
         title="Dashboard"
-        description="Sales, customers & operations overview"
+        subtitle="Sales, customers & operational overview"
+        totalOrders={summary.total_orders}
       />
 
       {/* KPI Cards */}
@@ -127,6 +107,7 @@ export default function DashboardPage() {
           subtitle={`Across ${formatNumber(summary.total_orders)} orders`}
           icon={DollarSign}
           index={0}
+          color="blue"
         />
         <KPICard
           title="Total Orders"
@@ -134,20 +115,23 @@ export default function DashboardPage() {
           subtitle={`${formatNumber(summary.unique_customers)} unique customers`}
           icon={ShoppingCart}
           index={1}
+          color="green"
         />
         <KPICard
           title="Unique Customers"
           value={formatNumber(summary.unique_customers)}
-          subtitle={`${formatINR(summary.average_order_revenue)} avg order value`}
+          subtitle="Across the dataset"
           icon={Users}
           index={2}
+          color="amber"
         />
         <KPICard
           title="Avg Order Value"
           value={formatINR(summary.average_order_revenue)}
-          subtitle={`Avg quantity: ${summary.average_quantity}`}
+          subtitle="Average revenue per order"
           icon={TrendingUp}
           index={3}
+          color="purple"
         />
       </div>
 
@@ -157,63 +141,59 @@ export default function DashboardPage() {
           <RevenueTrend data={monthly} />
         </div>
         <div>
-          <PaymentMethods data={payment} />
+          <PaymentMethods data={payment} totalOrders={summary.total_orders} />
         </div>
       </div>
 
       {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-        <CategoryRevenue data={categories} totalRevenue={summary.total_revenue} />
+        <CategoryRevenue data={categories} />
         <RegionRevenue data={regions} />
       </div>
 
+      {/* Business Snapshot */}
+      <BusinessSnapshot
+        avgQuantityPerOrder={summary.average_quantity}
+        avgDeliveryDays={summary.average_delivery_days}
+        avgCustomerRating={summary.average_customer_rating}
+        mostPopularPayment={topPayment?.payment_method || 'N/A'}
+      />
+
       {/* Key Insights */}
-      <div>
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-white">Key Insights</h3>
-          <p className="text-sm text-gray-400">Highlights from the analysis</p>
+      <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6">
+        <div className="mb-5">
+          <h3 className="text-base font-semibold text-white">Key Insights</h3>
+          <p className="text-xs text-gray-400 mt-0.5">Highlights from the analysis</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           <InsightCard
             title="Top Category"
             value={topCategory?.product_category || 'N/A'}
-            subtitle={`${formatINR(topCategory?.revenue || 0)} revenue`}
-            icon={Trophy}
+            detail={`${formatINR(topCategory?.revenue || 0)} revenue`}
+            index={0}
             color="blue"
           />
           <InsightCard
             title="Top Region"
             value={topRegion?.region || 'N/A'}
-            subtitle={`${formatINR(topRegion?.revenue || 0)} revenue`}
-            icon={MapPin}
+            detail={`${formatINR(topRegion?.revenue || 0)} revenue`}
+            index={1}
             color="green"
           />
           <InsightCard
-            title="Top Payment"
+            title="Most Used Payment"
             value={topPayment?.payment_method || 'N/A'}
-            subtitle={`${topPayment?.percentage_of_orders || 0}% of orders`}
-            icon={CreditCard}
+            detail={`${formatNumber(topPayment?.orders || 0)} orders`}
+            index={2}
             color="amber"
-          />
-          <InsightCard
-            title="Highest Rated"
-            value={topRatedCategory?.product_category || 'N/A'}
-            subtitle={`${topRatedCategory?.average_rating?.toFixed(2) || 0} avg rating`}
-            icon={Star}
-            color="purple"
-          />
-          <InsightCard
-            title="Avg Delivery"
-            value={`${avgDelivery} days`}
-            subtitle="Across all orders"
-            icon={Truck}
-            color="blue"
           />
         </div>
       </div>
 
       {/* Relationships */}
-      {relationships && <RelationshipPreview correlations={relationships.correlations} />}
+      {relationships && (
+        <RelationshipPreview data={relationships.correlations} />
+      )}
     </div>
   );
 }

@@ -8,7 +8,7 @@ export default function OperationsPage() {
     <div className="space-y-8">
       <Header
         title="Operations"
-        description="Delivery and operational performance"
+        subtitle="Delivery and operational performance"
       />
       <motion.div
         initial={{ opacity: 0, y: 20 }}

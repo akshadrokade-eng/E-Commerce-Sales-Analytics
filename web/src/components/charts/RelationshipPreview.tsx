@@ -1,54 +1,36 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Correlations } from '@/types';
-import { ArrowUpRight, ArrowDownRight, Minus } from 'lucide-react';
+import { GitCompare, Info } from 'lucide-react';
+import { formatCorrelation, getCorrelationStrength, getCorrelationDirection } from '@/lib/utils/format';
 
-interface RelationshipPreviewProps {
-  correlations: Correlations;
+interface RelationshipsProps {
+  data: {
+    quantity_revenue_correlation: number;
+    discount_revenue_correlation: number;
+    delivery_rating_correlation: number;
+  };
 }
 
-function getCorrelationLabel(value: number): string {
-  if (value > 0.3) return 'Positive relationship';
-  if (value < -0.3) return 'Negative relationship';
-  if (value > 0.1) return 'Weak positive';
-  if (value < -0.1) return 'Weak negative';
-  return 'Very weak relationship';
+const correlations = [
+  { key: 'quantity_revenue_correlation', label: 'Quantity \u2194 Revenue', icon: '\ud83d\udce6' },
+  { key: 'discount_revenue_correlation', label: 'Discount \u2194 Revenue', icon: '\ud83c\udf81' },
+  { key: 'delivery_rating_correlation', label: 'Delivery Days \u2194 Rating', icon: '\ud83d\ude9a' },
+] as const;
+
+function getBarWidth(value: number): number {
+  return Math.min(Math.abs(value) * 100, 100);
 }
 
-function getCorrelationIcon(value: number) {
-  if (value > 0.1) return <ArrowUpRight className="w-4 h-4 text-emerald-400" />;
-  if (value < -0.1) return <ArrowDownRight className="w-4 h-4 text-red-400" />;
-  return <Minus className="w-4 h-4 text-gray-400" />;
+function getBarColor(value: number): string {
+  if (value > 0.3) return 'bg-blue-500';
+  if (value > 0.1) return 'bg-blue-400/70';
+  if (value < -0.3) return 'bg-amber-500';
+  if (value < -0.1) return 'bg-amber-400/70';
+  return 'bg-gray-500';
 }
 
-function getCorrelationColor(value: number): string {
-  if (value > 0.3) return 'text-emerald-400';
-  if (value < -0.3) return 'text-red-400';
-  if (value > 0.1) return 'text-emerald-400';
-  if (value < -0.1) return 'text-red-400';
-  return 'text-gray-400';
-}
-
-export default function RelationshipPreview({ correlations }: RelationshipPreviewProps) {
-  const relationships = [
-    {
-      label: 'Quantity ↔ Revenue',
-      value: correlations.quantity_revenue_correlation,
-      description: 'How order quantity relates to revenue',
-    },
-    {
-      label: 'Discount ↔ Revenue',
-      value: correlations.discount_revenue_correlation,
-      description: 'How discount levels relate to revenue',
-    },
-    {
-      label: 'Delivery ↔ Rating',
-      value: correlations.delivery_rating_correlation,
-      description: 'How delivery time relates to customer rating',
-    },
-  ];
-
+export default function RelationshipPreview({ data }: RelationshipsProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -56,33 +38,43 @@ export default function RelationshipPreview({ correlations }: RelationshipPrevie
       transition={{ duration: 0.5, delay: 0.6 }}
       className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6"
     >
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-white">Data Relationships</h3>
-        <p className="text-sm text-gray-400">Analytical correlations in the dataset</p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h3 className="text-base font-semibold text-white flex items-center gap-2">
+            <GitCompare className="w-4 h-4 text-blue-400" />
+            Data Relationships
+          </h3>
+          <p className="text-xs text-gray-400 mt-0.5">Correlation between metrics</p>
+        </div>
       </div>
       <div className="space-y-4">
-        {relationships.map((rel) => (
-          <div
-            key={rel.label}
-            className="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg"
-          >
-            <div className="flex items-center gap-3">
-              {getCorrelationIcon(rel.value)}
-              <div>
-                <p className="text-sm font-medium text-white">{rel.label}</p>
-                <p className="text-xs text-gray-400">{rel.description}</p>
+        {correlations.map(({ key, label }) => {
+          const value = data[key];
+          const strength = getCorrelationStrength(value);
+          const direction = getCorrelationDirection(value);
+          const barColor = getBarColor(value);
+          return (
+            <div key={key}>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-sm text-gray-300">{label}</span>
+                <span className="text-sm font-semibold text-white font-mono">{formatCorrelation(value)}</span>
               </div>
+              <div className="h-1.5 bg-gray-700/50 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full ${barColor} transition-all duration-500`}
+                  style={{ width: `${getBarWidth(value)}%` }}
+                />
+              </div>
+              <p className="text-[11px] text-gray-500 mt-1">{strength} {direction.toLowerCase()} relationship</p>
             </div>
-            <div className="text-right">
-              <p className={`text-sm font-medium ${getCorrelationColor(rel.value)}`}>
-                {rel.value.toFixed(4)}
-              </p>
-              <p className="text-xs text-gray-500">
-                {getCorrelationLabel(rel.value)}
-              </p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
+      </div>
+      <div className="mt-4 pt-3 border-t border-gray-700/50 flex items-start gap-2">
+        <Info className="w-3.5 h-3.5 text-gray-500 mt-0.5 flex-shrink-0" />
+        <p className="text-[10px] text-gray-500 leading-relaxed">
+          Correlation does not imply causation. These values indicate statistical relationships only.
+        </p>
       </div>
     </motion.div>
   );

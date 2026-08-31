@@ -8,7 +8,7 @@ export default function CustomersPage() {
     <div className="space-y-8">
       <Header
         title="Customers"
-        description="Customer analytics and insights"
+        subtitle="Customer analytics and insights"
       />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
