@@ -1,0 +1,100 @@
+[
+  {
+    "year": 2022,
+    "revenue": 371824.3,
+    "orders": 365,
+    "quantity": 1469,
+    "average_order_revenue": 1018.7
+  },
+  {
+    "year": 2023,
+    "revenue": 365915.79,
+    "orders": 365,
+    "quantity": 1497,
+    "average_order_revenue": 1002.51
+  },
+  {
+    "year": 2024,
+    "revenue": 363209.13,
+    "orders": 366,
+    "quantity": 1489,
+    "average_order_revenue": 992.37
+  },
+  {
+    "year": 2025,
+    "revenue": 349802.33,
+    "orders": 365,
+    "quantity": 1410,
+    "average_order_revenue": 958.36
+  },
+  {
+    "year": 2026,
+    "revenue": 386369.69,
+    "orders": 365,
+    "quantity": 1478,
+    "average_order_revenue": 1058.55
+  },
+  {
+    "year": 2027,
+    "revenue": 386151.91,
+    "orders": 365,
+    "quantity": 1546,
+    "average_order_revenue": 1057.95
+  },
+  {
+    "year": 2028,
+    "revenue": 376844.8,
+    "orders": 366,
+    "quantity": 1476,
+    "average_order_revenue": 1029.63
+  },
+  {
+    "year": 2029,
+    "revenue": 359239.24,
+    "orders": 365,
+    "quantity": 1472,
+    "average_order_revenue": 984.22
+  },
+  {
+    "year": 2030,
+    "revenue": 387884.46,
+    "orders": 365,
+    "quantity": 1500,
+    "average_order_revenue": 1062.7
+  },
+  {
+    "year": 2031,
+    "revenue": 365250.83,
+    "orders": 365,
+    "quantity": 1427,
+    "average_order_revenue": 1000.69
+  },
+  {
+    "year": 2032,
+    "revenue": 386584.63,
+    "orders": 366,
+    "quantity": 1492,
+    "average_order_revenue": 1056.24
+  },
+  {
+    "year": 2033,
+    "revenue": 408725.72,
+    "orders": 365,
+    "quantity": 1524,
+    "average_order_revenue": 1119.8
+  },
+  {
+    "year": 2034,
+    "revenue": 363239.55,
+    "orders": 365,
+    "quantity": 1431,
+    "average_order_revenue": 995.18
+  },
+  {
+    "year": 2035,
+    "revenue": 238733.36,
+    "orders": 252,
+    "quantity": 1013,
+    "average_order_revenue": 947.35
+  }
+]

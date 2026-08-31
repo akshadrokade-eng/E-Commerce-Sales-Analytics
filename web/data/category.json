@@ -1,0 +1,42 @@
+[
+  {
+    "product_category": "Beauty",
+    "revenue": 765860.88,
+    "orders": 723,
+    "quantity": 2995,
+    "average_order_revenue": 1059.28,
+    "average_rating": 3.01,
+    "average_discount": 0.18,
+    "average_delivery_days": 6.2
+  },
+  {
+    "product_category": "Clothing",
+    "revenue": 1531931.72,
+    "orders": 1531,
+    "quantity": 6171,
+    "average_order_revenue": 1000.61,
+    "average_rating": 3.01,
+    "average_discount": 0.18,
+    "average_delivery_days": 6.12
+  },
+  {
+    "product_category": "Electronics",
+    "revenue": 1829899.22,
+    "orders": 1777,
+    "quantity": 7109,
+    "average_order_revenue": 1029.77,
+    "average_rating": 2.95,
+    "average_discount": 0.18,
+    "average_delivery_days": 6.07
+  },
+  {
+    "product_category": "Home",
+    "revenue": 982083.92,
+    "orders": 969,
+    "quantity": 3949,
+    "average_order_revenue": 1013.5,
+    "average_rating": 2.94,
+    "average_discount": 0.18,
+    "average_delivery_days": 6.15
+  }
+]
