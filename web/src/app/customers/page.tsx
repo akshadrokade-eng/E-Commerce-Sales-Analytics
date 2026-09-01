@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { formatINR, formatINRDetailed, formatNumber, formatPercent } from '@/lib/utils/format';
+import { formatINR, formatINRDetailed, formatNumber } from '@/lib/utils/format';
 
 interface Customer {
   customer_id: number;
@@ -156,7 +156,7 @@ export default function CustomersPage() {
         />
         <KPICard
           title="Avg Orders / Customer"
-          value={metrics.avgOrdersPerCustomer.toFixed(1)}
+          value={metrics.avgOrdersPerCustomer.toFixed(2)}
           subtitle="Per customer"
           icon={TrendingUp}
           index={2}
@@ -172,7 +172,7 @@ export default function CustomersPage() {
         />
         <KPICard
           title="Repeat Customer %"
-          value={formatPercent(metrics.repeatPercent)}
+          value={`${metrics.repeatPercent.toFixed(2)}%`}
           subtitle="Of all customers"
           icon={Percent}
           index={4}
@@ -244,7 +244,7 @@ export default function CustomersPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <InsightCard
             title="Repeat Purchasing"
-            value={`${formatPercent(metrics.repeatPercent)} repeat rate`}
+            value={`${metrics.repeatPercent.toFixed(2)}% repeat rate`}
             detail={`${formatNumber(metrics.repeatCustomers)} of ${formatNumber(metrics.uniqueCustomers)} customers made more than one purchase.`}
             index={0}
             color="green"
@@ -258,8 +258,8 @@ export default function CustomersPage() {
           />
           <InsightCard
             title="Order Frequency"
-            value={`${metrics.avgOrdersPerCustomer.toFixed(1)} avg orders`}
-            detail={`Customers average ${metrics.avgOrdersPerCustomer.toFixed(1)} orders across the dataset.`}
+            value={`${metrics.avgOrdersPerCustomer.toFixed(2)} avg orders`}
+            detail={`Customers average ${metrics.avgOrdersPerCustomer.toFixed(2)} orders across the dataset.`}
             index={2}
             color="amber"
           />
