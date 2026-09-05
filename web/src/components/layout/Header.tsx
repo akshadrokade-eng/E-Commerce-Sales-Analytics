@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import DatasetUpload from '@/components/dashboard/DatasetUpload';
 
 interface HeaderProps {
   title: string;
@@ -24,13 +25,14 @@ export default function Header({ title, subtitle, totalOrders }: HeaderProps) {
           <p className="mt-1 text-sm text-gray-400">{subtitle}</p>
         )}
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         {totalOrders && (
           <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-800/50 border border-gray-700/50 rounded-lg">
             <span className="text-xs text-gray-400">Dataset</span>
             <span className="text-xs font-medium text-white">{totalOrders.toLocaleString('en-IN')} orders</span>
           </div>
         )}
+        <DatasetUpload />
         <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-800/50 border border-gray-700/50 rounded-lg">
           <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
           <span className="text-xs text-gray-400">Loaded</span>

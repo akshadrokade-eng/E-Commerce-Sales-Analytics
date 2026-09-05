@@ -115,17 +115,70 @@ npm run build
 npm run dev -- -p 3001
 ```
 
+## Using a Custom Dataset
+
+You can upload your own e-commerce CSV dataset to replace the default data.
+
+### Prerequisites
+
+1. Start the Python backend API:
+```bash
+# From project root
+cd backend
+pip install fastapi uvicorn python-multipart
+uvicorn app:app --host 127.0.0.1 --port 8000
+```
+
+2. Start the Next.js dashboard:
+```bash
+npm run dev
+```
+
+### Upload Process
+
+1. Click the **Dataset** button in the dashboard header
+2. Select a compatible `.csv` file
+3. Review the preview (first 5 rows, column list)
+4. Click **Process Dataset**
+5. Dashboard refreshes with new data
+
+### Required CSV Columns
+
+Your CSV must contain these columns:
+- `order_id`
+- `order_date`
+- `customer_id`
+- `product_category`
+- `region`
+- `quantity`
+- `unit_price`
+- `discount`
+- `payment_method`
+- `delivery_days`
+- `customer_rating`
+- `revenue`
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Health check |
+| `/api/dataset` | GET | Get current dataset info |
+| `/api/preview` | POST | Preview CSV without processing |
+| `/api/upload` | POST | Upload and process CSV |
+| `/api/reset` | POST | Reset to default dataset |
+
 ## Project Structure
 
 ```
 web/
 ├── public/
-│   └── data/           # Dashboard JSON files
+│   └── data/           # Dashboard JSON files (including metadata.json)
 ├── src/
 │   ├── app/            # Next.js pages (App Router)
 │   ├── components/
 │   │   ├── charts/     # Chart components
-│   │   ├── dashboard/  # Dashboard components
+│   │   ├── dashboard/  # Dashboard components (including DatasetUpload)
 │   │   └── navigation/ # Sidebar component
 │   ├── lib/
 │   │   └── utils/      # Formatting utilities

@@ -250,6 +250,77 @@ Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
 - **Correlation ≠ Causation:** Statistical correlations do not imply causal relationships
 - **Date Range:** Spans 2022-2035, which may include future dates depending on context
 
+## Using a Custom Dataset
+
+You can upload your own compatible e-commerce CSV dataset to replace the default data.
+
+### Prerequisites
+
+Install Python dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+### Step 1: Start the Python Backend
+
+```bash
+cd backend
+uvicorn app:app --host 127.0.0.1 --port 8000
+```
+
+The API server will start at `http://127.0.0.1:8000`.
+
+### Step 2: Start the Next.js Dashboard
+
+```bash
+cd web
+npm run dev
+```
+
+### Step 3: Upload Dataset
+
+1. Open the dashboard at `http://localhost:3000`
+2. Click the **Dataset** button in the header
+3. Select a compatible CSV file
+4. Review the preview and validation status
+5. Click **Process Dataset**
+6. Wait for processing to complete
+7. Dashboard updates automatically with new data
+
+### Required CSV Columns
+
+Your CSV must contain these columns:
+
+| Column | Description | Example |
+|--------|-------------|---------|
+| `order_id` | Unique order identifier | 10001 |
+| `order_date` | Date of order (MM/DD/YYYY or ISO format) | 1/15/2024 |
+| `customer_id` | Customer identifier | 1102 |
+| `product_category` | Product category | Electronics |
+| `region` | Geographic region | West |
+| `quantity` | Number of items | 3 |
+| `unit_price` | Price per unit | 299.99 |
+| `discount` | Discount rate (0-1) | 0.15 |
+| `payment_method` | Payment method | Card |
+| `delivery_days` | Days to deliver | 5 |
+| `customer_rating` | Rating (0-5) | 4.2 |
+| `revenue` | Total revenue | 764.97 |
+
+### Validation Rules
+
+- File must be `.csv` format
+- Dataset cannot be empty
+- All required columns must be present
+- Numeric fields must contain valid numbers
+- Dates must be parseable
+- Discount values must be between 0 and 1
+- Customer rating must be between 0 and 5
+- Quantity, price, and revenue must be non-negative
+
+### Reset to Default Dataset
+
+Click **Reset to Default** in the Dataset Management modal to restore the original dataset.
+
 ## Future Scope
 
 - Real-time data integration from live databases
