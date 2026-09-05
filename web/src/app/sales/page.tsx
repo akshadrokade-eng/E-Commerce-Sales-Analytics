@@ -8,6 +8,7 @@ import CategoryRevenue from '@/components/charts/CategoryRevenue';
 import RegionRevenue from '@/components/charts/RegionRevenue';
 import PaymentMethods from '@/components/charts/PaymentMethods';
 import YearlyRevenue from '@/components/charts/YearlyRevenue';
+import DatasetGuard from '@/components/dashboard/DatasetGuard';
 import {
   DollarSign,
   ShoppingCart,
@@ -28,7 +29,7 @@ import {
 } from '@/types';
 import { formatINR, formatNumber } from '@/lib/utils/format';
 
-export default function SalesPage() {
+function SalesContent() {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [categories, setCategories] = useState<CategoryData[]>([]);
   const [regions, setRegions] = useState<RegionData[]>([]);
@@ -97,7 +98,6 @@ export default function SalesPage() {
       <Header
         title="Sales Analytics"
         subtitle="Detailed analysis of revenue, orders, products and regional performance"
-        totalOrders={summary.total_orders}
       />
 
       {/* KPI Cards */}
@@ -250,5 +250,13 @@ export default function SalesPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function SalesPage() {
+  return (
+    <DatasetGuard>
+      <SalesContent />
+    </DatasetGuard>
   );
 }

@@ -9,6 +9,7 @@ import CategoryRevenue from '@/components/charts/CategoryRevenue';
 import RegionRevenue from '@/components/charts/RegionRevenue';
 import PaymentMethods from '@/components/charts/PaymentMethods';
 import RelationshipPreview from '@/components/charts/RelationshipPreview';
+import DatasetGuard from '@/components/dashboard/DatasetGuard';
 import {
   DollarSign,
   ShoppingCart,
@@ -26,7 +27,7 @@ import {
 } from '@/types';
 import { formatINR, formatNumber } from '@/lib/utils/format';
 
-export default function DashboardPage() {
+function DashboardContent() {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [categories, setCategories] = useState<CategoryData[]>([]);
   const [regions, setRegions] = useState<RegionData[]>([]);
@@ -96,7 +97,6 @@ export default function DashboardPage() {
       <Header
         title="Dashboard"
         subtitle="Sales, customers & operational overview"
-        totalOrders={summary.total_orders}
       />
 
       {/* KPI Cards */}
@@ -195,5 +195,13 @@ export default function DashboardPage() {
         <RelationshipPreview data={relationships.correlations} />
       )}
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <DatasetGuard>
+      <DashboardContent />
+    </DatasetGuard>
   );
 }

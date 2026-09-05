@@ -8,6 +8,7 @@ import DeliveryDistribution from '@/components/charts/DeliveryDistribution';
 import RatingDistribution from '@/components/charts/RatingDistribution';
 import CategoryRating from '@/components/charts/CategoryRating';
 import DeliveryRatingScatter from '@/components/charts/DeliveryRatingScatter';
+import DatasetGuard from '@/components/dashboard/DatasetGuard';
 import {
   Truck,
   Star,
@@ -43,7 +44,7 @@ interface SummaryData {
   average_customer_rating: number;
 }
 
-export default function OperationsPage() {
+function OperationsContent() {
   const [operations, setOperations] = useState<OperationsData | null>(null);
   const [relationships, setRelationships] = useState<RelationshipsData | null>(null);
   const [summary, setSummary] = useState<SummaryData | null>(null);
@@ -265,5 +266,13 @@ export default function OperationsPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function OperationsPage() {
+  return (
+    <DatasetGuard>
+      <OperationsContent />
+    </DatasetGuard>
   );
 }

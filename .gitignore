@@ -42,3 +42,6 @@ web/.eslintcache
 # Node
 node_modules/
 web/node_modules/
+
+# Generated runtime data (dashboard JSON files produced by upload/pipeline)
+web/public/data/*.json

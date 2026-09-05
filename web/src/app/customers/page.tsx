@@ -6,6 +6,7 @@ import InsightCard from '@/components/dashboard/InsightCard';
 import CustomerRevenueChart from '@/components/charts/CustomerRevenueChart';
 import OrdersPerCustomer from '@/components/charts/OrdersPerCustomer';
 import CustomerRankingTable from '@/components/dashboard/CustomerRankingTable';
+import DatasetGuard from '@/components/dashboard/DatasetGuard';
 import {
   Users,
   ShoppingCart,
@@ -36,7 +37,7 @@ interface SummaryData {
   total_quantity: number;
 }
 
-export default function CustomersPage() {
+function CustomersContent() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -273,5 +274,13 @@ export default function CustomersPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function CustomersPage() {
+  return (
+    <DatasetGuard>
+      <CustomersContent />
+    </DatasetGuard>
   );
 }

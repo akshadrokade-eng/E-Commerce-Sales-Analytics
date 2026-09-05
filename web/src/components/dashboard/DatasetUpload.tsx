@@ -47,8 +47,14 @@ interface UploadResult {
 
 type UploadState = 'idle' | 'preview' | 'uploading' | 'validating' | 'processing' | 'success' | 'error';
 
-export default function DatasetUpload() {
-  const [isOpen, setIsOpen] = useState(false);
+interface DatasetUploadProps {
+  autoOpen?: boolean;
+  onClose?: () => void;
+  onSuccess?: () => void;
+}
+
+export default function DatasetUpload({ autoOpen = false, onClose, onSuccess }: DatasetUploadProps) {
+  const [isOpen, setIsOpen] = useState(autoOpen);
   const [state, setState] = useState<UploadState>('idle');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<PreviewData | null>(null);
@@ -126,10 +132,7 @@ export default function DatasetUpload() {
         setMetadata(data.metadata || null);
         setState('success');
 
-        // Refresh the page after a short delay to show new data
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        onSuccess?.();
       } else {
         setError(data.message);
         setResult(data);
@@ -139,7 +142,7 @@ export default function DatasetUpload() {
       setError('Cannot connect to backend. Please start the Python API server.');
       setState('error');
     }
-  }, [selectedFile]);
+  }, [selectedFile, onSuccess]);
 
   const handleReset = useCallback(async () => {
     setState('uploading');
@@ -156,7 +159,7 @@ export default function DatasetUpload() {
         setSelectedFile(null);
         setPreview(null);
         setResult(null);
-        window.location.reload();
+        onClose?.();
       } else {
         setError(data.message || 'Reset failed');
         setState('error');
@@ -165,10 +168,11 @@ export default function DatasetUpload() {
       setError('Cannot connect to backend');
       setState('error');
     }
-  }, []);
+  }, [onClose]);
 
   const handleClose = () => {
     setIsOpen(false);
+    onClose?.();
     setTimeout(() => {
       setState('idle');
       setSelectedFile(null);
@@ -392,7 +396,7 @@ export default function DatasetUpload() {
                         <p className="text-white font-medium">{result.columns}</p>
                       </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-4">Dashboard will refresh shortly...</p>
+                    <p className="text-xs text-gray-500 mt-4">Dashboard is now active.</p>
                   </motion.div>
                 )}
 

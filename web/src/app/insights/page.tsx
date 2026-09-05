@@ -3,6 +3,7 @@
 import Header from '@/components/layout/Header';
 import KPICard from '@/components/dashboard/KPICard';
 import InsightCard from '@/components/dashboard/InsightCard';
+import DatasetGuard from '@/components/dashboard/DatasetGuard';
 import {
   DollarSign,
   ShoppingCart,
@@ -71,7 +72,7 @@ interface RelationshipsData {
   };
 }
 
-export default function InsightsPage() {
+function InsightsContent() {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [categories, setCategories] = useState<CategoryData[]>([]);
   const [regions, setRegions] = useState<RegionData[]>([]);
@@ -529,5 +530,13 @@ export default function InsightsPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function InsightsPage() {
+  return (
+    <DatasetGuard>
+      <InsightsContent />
+    </DatasetGuard>
   );
 }
