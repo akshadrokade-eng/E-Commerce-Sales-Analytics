@@ -113,7 +113,7 @@ export default function OperationsPage() {
     <div className="space-y-8">
       <Header
         title="Operations Analytics"
-        subtitle="Delivery performance, customer satisfaction and operational trends"
+        subtitle="Explore delivery performance, customer ratings, and operational metrics."
         totalOrders={summary.total_orders}
       />
 

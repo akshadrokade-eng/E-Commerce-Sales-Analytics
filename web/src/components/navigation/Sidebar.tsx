@@ -45,8 +45,9 @@ export default function Sidebar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
             onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
           />
         )}
       </AnimatePresence>

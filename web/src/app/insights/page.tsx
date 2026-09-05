@@ -144,8 +144,9 @@ export default function InsightsPage() {
   const avgCustomerRevenue = summary.total_revenue / summary.unique_customers;
   const avgOrdersPerCustomer = summary.total_orders / summary.unique_customers;
 
-  const highestYear = [...yearly].sort((a, b) => b.revenue - a.revenue)[0];
-  const lowestYear = [...yearly].sort((a, b) => a.revenue - b.revenue)[0];
+  const completeYears = yearly.filter((y) => y.year < 2035);
+  const highestYear = [...completeYears].sort((a, b) => b.revenue - a.revenue)[0];
+  const lowestYear = [...completeYears].sort((a, b) => a.revenue - b.revenue)[0];
 
   const bestRatedCategory = [...operations.rating_by_category].sort(
     (a, b) => b.average_rating - a.average_rating
@@ -323,7 +324,7 @@ export default function InsightsPage() {
       >
         <div className="mb-5">
           <h3 className="text-base font-semibold text-white">Trends</h3>
-          <p className="text-xs text-gray-400 mt-0.5">Revenue trends across years</p>
+          <p className="text-xs text-gray-400 mt-0.5">Revenue trends across complete years (2022-2034)</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="p-4 bg-gray-700/20 rounded-lg">
@@ -407,13 +408,13 @@ export default function InsightsPage() {
           <p className="text-xs text-gray-400 mt-0.5">Concise facts derived from the data</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <InsightCard title="1. Category Leader" value="Electronics" detail="Highest-revenue product category at {formatINR(topCategory?.revenue)}." index={0} color="blue" />
-          <InsightCard title="2. Regional Leader" value="West" detail="Highest-revenue region at {formatINR(topRegion?.revenue)}." index={1} color="green" />
-          <InsightCard title="3. Payment Leader" value="Card" detail="Most-used payment method with {formatNumber(topPayment?.orders)} orders." index={2} color="amber" />
-          <InsightCard title="4. Repeat Rate" value={`${repeatRate.toFixed(2)}%`} detail="{repeatCustomers} of {summary.unique_customers} customers placed more than one order." index={3} color="green" />
-          <InsightCard title="5. Quantity-Revenue" value="Positive correlation" detail="Correlation of {formatCorrelation(correlations.quantity_revenue_correlation)} between quantity and revenue." index={4} color="blue" />
-          <InsightCard title="6. Delivery-Rating" value="Very weak relationship" detail="Correlation of {formatCorrelation(correlations.delivery_rating_correlation)} between delivery days and rating." index={5} color="purple" />
-          <InsightCard title="7. Revenue Range" value={`${formatINR(lowestYear?.revenue)} - ${formatINR(highestYear?.revenue)}`} detail="Annual revenue spans from {lowestYear?.year} to {highestYear?.year}." index={6} color="amber" />
+          <InsightCard title="1. Category Leader" value="Electronics" detail={`Highest-revenue product category at ${formatINR(topCategory?.revenue)}.`} index={0} color="blue" />
+          <InsightCard title="2. Regional Leader" value="West" detail={`Highest-revenue region at ${formatINR(topRegion?.revenue)}.`} index={1} color="green" />
+          <InsightCard title="3. Payment Leader" value="Card" detail={`Most-used payment method with ${formatNumber(topPayment?.orders)} orders.`} index={2} color="amber" />
+          <InsightCard title="4. Repeat Rate" value={`${repeatRate.toFixed(2)}%`} detail={`${repeatCustomers} of ${summary.unique_customers} customers placed more than one order.`} index={3} color="green" />
+          <InsightCard title="5. Quantity-Revenue" value="Positive correlation" detail={`Correlation of ${formatCorrelation(correlations.quantity_revenue_correlation)} between quantity and revenue.`} index={4} color="blue" />
+          <InsightCard title="6. Delivery-Rating" value="Very weak relationship" detail={`Correlation of ${formatCorrelation(correlations.delivery_rating_correlation)} between delivery days and rating.`} index={5} color="purple" />
+          <InsightCard title="7. Revenue Range" value={`${formatINR(lowestYear?.revenue)} - ${formatINR(highestYear?.revenue)}`} detail={`Complete-year revenue (2022-${highestYear?.year}) ranges from ${formatINR(lowestYear?.revenue)} to ${formatINR(highestYear?.revenue)}. 2035 is partial through September.`} index={6} color="amber" />
         </div>
       </motion.div>
 
@@ -473,7 +474,7 @@ export default function InsightsPage() {
           </div>
           <div className="flex items-start gap-3 p-3 rounded-lg">
             <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-2 flex-shrink-0" />
-            <p className="text-sm text-gray-300">Data spans from {summary.average_delivery_days > 0 ? '2022' : '2022'} to 2035, covering a synthetic or limited time range.</p>
+            <p className="text-sm text-gray-300">Data spans from 2022 to 2035 (2035 is a partial year through September), covering a synthetic or limited time range.</p>
           </div>
           <div className="flex items-start gap-3 p-3 rounded-lg">
             <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-2 flex-shrink-0" />

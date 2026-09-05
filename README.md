@@ -1,128 +1,270 @@
 # E-Commerce Sales & Customer Analytics
 
-Beginner-level internship project for analyzing e-commerce sales data and customer behavior.
+A comprehensive analytics project analyzing e-commerce sales data, customer behavior, and operational performance through an interactive Next.js dashboard.
 
-## Technologies
+## Project Overview
 
-- **Python** - Main programming language
-- **Pandas** - Data cleaning and analysis
-- **SQL / SQLite** - Database queries and storage
-- **Matplotlib** - Basic charts and plots
-- **Seaborn** - Advanced statistical visualizations
-- **Next.js** - Interactive web dashboard (planned)
+This project processes raw e-commerce sales data through a complete analytics pipeline — from data profiling and database creation to SQL analysis, Python-based statistical analysis, and a premium interactive web dashboard built with Next.js, React, and TypeScript.
+
+## Objectives
+
+- Analyze e-commerce sales patterns across categories, regions, and payment methods
+- Understand customer behavior, retention, and revenue distribution
+- Evaluate operational performance including delivery times and customer ratings
+- Identify correlations between key business metrics
+- Present insights through an interactive, visually polished dashboard
+
+## Key Features
+
+- **5 interactive dashboard pages** with real-time data visualization
+- **Premium dark theme UI** with smooth Framer Motion animations
+- **16+ chart types** including area, bar, donut, scatter, and histogram charts
+- **Responsive design** for desktop and mobile devices
+- **Complete data pipeline** from CSV to interactive dashboard
+- **Statistical analysis** with correlation calculations and trend identification
+
+## Technology Stack
+
+### Data Processing
+- **Python** — Main programming language
+- **Pandas** — Data cleaning, transformation, and analysis
+- **SQLite** — Database storage and SQL queries
+- **SQL** — Database analysis queries
+- **Matplotlib** — Static chart visualizations
+- **Seaborn** — Statistical visualizations
+
+### Dashboard
+- **Next.js 16** — React framework with App Router
+- **React 19** — UI component library
+- **TypeScript** — Type-safe development
+- **Tailwind CSS** — Utility-first CSS styling
+- **Recharts** — React charting library
+- **Framer Motion** — Animation library
+- **Lucide React** — Icon library
+
+## Dataset Information
+
+- **Total Orders:** 5,000
+- **Unique Customers:** 989
+- **Date Range:** January 1, 2022 to September 9, 2035
+- **Revenue:** ₹5,109,775.74
+- **Categories:** Electronics, Clothing, Home & Garden, Books, Sports
+- **Regions:** East, West, North, South
+- **Payment Methods:** Card, UPI, Cash on Delivery, Net Banking
+
+> **Note:** 2035 is a partial year (through September 9). The dataset may be synthetic or limited in scope.
+
+## Data Analysis Workflow
+
+```
+Dataset (CSV)
+    ↓
+Python Data Profiling (00_data_profiling.py)
+    ↓
+SQLite Database (01_create_database.py)
+    ↓
+Database Verification (02_verify_database.py)
+    ↓
+SQL Analysis (03_run_sql_analysis.py)
+    ↓
+Pandas Analysis (04_pandas_analysis.py)
+    ↓
+Matplotlib Visualizations (05_matplotlib_visualizations.py)
+    ↓
+Seaborn Visualizations (06_seaborn_visualizations.py)
+    ↓
+Dashboard JSON Generation (07_generate_dashboard_data.py)
+    ↓
+Next.js Analytics Dashboard
+```
+
+## Dashboard Pages
+
+### 1. Dashboard (`/`)
+- KPI cards: Total Revenue, Total Orders, Unique Customers, Average Order Value
+- Revenue trend (monthly area chart)
+- Category revenue breakdown
+- Regional revenue distribution
+- Payment method distribution
+- Year-over-year revenue comparison
+- Business snapshot and relationship insights
+
+### 2. Sales Analytics (`/sales`)
+- Revenue trend analysis
+- Category performance metrics
+- Regional sales distribution
+- Payment method analytics
+- Yearly revenue comparison
+- Sales insights and observations
+
+### 3. Customer Analytics (`/customers`)
+- Customer revenue distribution
+- Orders per customer analysis
+- Customer segmentation by revenue
+- Top customer rankings
+- Customer behavior insights
+
+### 4. Operations Analytics (`/operations`)
+- Delivery performance by region
+- Delivery time distribution
+- Customer rating distribution
+- Rating by product category
+- Delivery-rating correlation analysis
+- Operational insights
+
+### 5. Business Insights (`/insights`)
+- Executive summary
+- Sales performance analysis
+- Customer behavior insights
+- Operational metrics
+- Trend analysis
+- Data relationships and correlations
+- Key findings
+- Business observations
+- Data limitations
+- Future analysis suggestions
+
+## Key Analytics
+
+| Metric | Value |
+|--------|-------|
+| Total Revenue | ₹5,109,775.74 |
+| Total Orders | 5,000 |
+| Unique Customers | 989 |
+| Repeat Customers | 950 (96.06%) |
+| Average Order Value | ₹1,021.96 |
+| Average Delivery Days | 6.12 |
+| Average Rating | 2.97 / 5.0 |
+
+### Correlations
+- Quantity ↔ Revenue: +0.6236 (Positive)
+- Discount ↔ Revenue: -0.1393 (Negative)
+- Delivery Days ↔ Rating: -0.0176 (Very Weak)
 
 ## Project Structure
 
 ```
 E-Commerce-Sales-Analytics/
-|
-|-- data/
-|   |-- raw/              # Original dataset files
-|
-|-- database/             # SQLite database files
-|
-|-- sql/                  # SQL query scripts
-|
-|-- python/               # Python scripts for analysis
-|   |-- 00_data_profiling.py
-|   |-- 01_create_database.py
-|   |-- 02_verify_database.py
-|   |-- 03_run_sql_analysis.py
-|   |-- 04_pandas_analysis.py
-|   |-- 05_matplotlib_visualizations.py
-|   |-- 06_seaborn_visualizations.py
-|   |-- 07_generate_dashboard_data.py
-|
-|-- outputs/
-|   |-- plots/            # Saved chart images (Matplotlib + Seaborn)
-|   |-- insights/         # Text insights and summaries
-|   |-- *.csv             # Analysis outputs
-|
-|-- web/
-|   |-- data/             # Dashboard-ready JSON files
-|
-|-- report/
-|   |-- data_dictionary.md
-|
-|-- requirements.txt      # Python dependencies
-|-- README.md             # This file
+├── data/
+│   ├── raw/                    # Original dataset files
+│   └── cleaned/                # Processed data
+├── database/                   # SQLite database files
+├── sql/                        # SQL query scripts
+├── python/                     # Python analysis scripts
+│   ├── 00_data_profiling.py
+│   ├── 01_create_database.py
+│   ├── 02_verify_database.py
+│   ├── 03_run_sql_analysis.py
+│   ├── 04_pandas_analysis.py
+│   ├── 05_matplotlib_visualizations.py
+│   ├── 06_seaborn_visualizations.py
+│   └── 07_generate_dashboard_data.py
+├── outputs/
+│   ├── plots/                  # Saved chart images
+│   ├── insights/               # Text insights
+│   └── *.csv                   # Analysis outputs
+├── web/
+│   ├── public/data/            # Dashboard JSON files
+│   └── src/
+│       ├── app/                # Next.js pages
+│       ├── components/         # React components
+│       ├── lib/                # Utilities and data
+│       └── types/              # TypeScript types
+├── report/
+│   └── data_dictionary.md
+├── requirements.txt
+└── README.md
 ```
 
-## Project Phases
+## Installation
 
-### Phase 1: Dataset
-- Obtain e-commerce dataset (CSV)
-- Understand columns and data types
+### Prerequisites
+- Python 3.8+
+- Node.js 18+
+- npm or yarn
 
-### Phase 2: Database
-- Create SQLite database
-- Import CSV data into database
-- Run SQL queries for analysis
-
-### Phase 3: SQL Analysis
-- Business analysis queries
-- Category, regional, payment analysis
-
-### Phase 4: Pandas Analysis
-- Data cleaning with Pandas
-- SQL + Python integration
-- Exploratory Data Analysis (EDA)
-
-### Phase 5: Matplotlib Visualizations
-- Bar charts, line charts, pie charts
-
-### Phase 6: Seaborn Visualizations
-- Scatter plots, distributions, relationships
-
-### Phase 7: Dashboard Data Pipeline
-- Generate dashboard-ready JSON files
-- Validate data consistency
-
-### Phase 8: Next.js Dashboard (Planned)
-- Build interactive web dashboard
-- Create KPI cards and filters
-- Add charts and visualizations
-
-## Data Pipeline
-
-```
-Dataset (CSV)
-    ↓
-SQLite Database
-    ↓
-SQL Analysis
-    ↓
-Python + Pandas Analysis
-    ↓
-Matplotlib + Seaborn Visualizations
-    ↓
-Dashboard-ready JSON Files
-    ↓
-Next.js Interactive Dashboard
-```
-
-## Setup Instructions
-
-1. Clone the repository
-2. Install Python dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Place your dataset CSV in `data/raw/`
-4. Run the scripts in order (00 to 07)
-
-## Regenerating Dashboard Data
-
-To regenerate the JSON files for the dashboard:
-
+### Python Setup
 ```bash
+# Clone the repository
+git clone https://github.com/akshadrokade-eng/E-Commerce-Sales-Analytics.git
+cd E-Commerce-Sales-Analytics
+
+# Install Python dependencies
+pip install -r requirements.txt
+```
+
+### Dashboard Setup
+```bash
+# Navigate to web directory
+cd web
+
+# Install dependencies
+npm install
+```
+
+## How to Run
+
+### Run the Data Pipeline
+```bash
+# Run scripts in order from project root
+python python/00_data_profiling.py
+python python/01_create_database.py
+python python/02_verify_database.py
+python python/03_run_sql_analysis.py
+python python/04_pandas_analysis.py
+python python/05_matplotlib_visualizations.py
+python python/06_seaborn_visualizations.py
 python python/07_generate_dashboard_data.py
 ```
 
-## Learning Outcomes
+### Run the Dashboard
+```bash
+# Development mode
+cd web
+npm run dev
 
-- Data cleaning and preprocessing
-- SQL database creation and querying
-- Exploratory Data Analysis techniques
-- Data visualization with Matplotlib and Seaborn
-- Dashboard data preparation
+# Production build
+cd web
+npm run build
+npm start
+```
+
+Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
+
+## Dashboard Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Main dashboard with KPIs and overview charts |
+| `/sales` | Sales analytics with revenue, category, and regional analysis |
+| `/customers` | Customer analytics with revenue distribution and rankings |
+| `/operations` | Operations analytics with delivery and rating metrics |
+| `/insights` | Business insights with trends, correlations, and findings |
+
+## Data Limitations
+
+- **Partial Year:** 2035 data is incomplete (through September 9)
+- **Dataset Size:** 5,000 orders may not represent full business scale
+- **Synthetic Data:** The dataset may be synthetic or limited in scope
+- **No Demographics:** Customer demographic information is not available
+- **Correlation ≠ Causation:** Statistical correlations do not imply causal relationships
+- **Date Range:** Spans 2022-2035, which may include future dates depending on context
+
+## Future Scope
+
+- Real-time data integration from live databases
+- User authentication and role-based access control
+- Export functionality for reports and charts
+- Advanced predictive analytics using machine learning
+- Custom date range filtering and drill-down capabilities
+- Multi-language support
+- Performance optimization for large datasets
+
+## Author
+
+**Akshad Rokade**
+- GitHub: [akshadrokade-eng](https://github.com/akshadrokade-eng)
+
+---
+
+*This project was developed as part of an internship program, demonstrating end-to-end data analytics from raw data to interactive dashboard.*

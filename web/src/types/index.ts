@@ -1,5 +1,5 @@
 // TypeScript types for dashboard data
-// Based on actual JSON schemas from web/data/
+// Based on actual JSON schemas from web/public/data/
 
 export interface SummaryData {
   total_revenue: number;

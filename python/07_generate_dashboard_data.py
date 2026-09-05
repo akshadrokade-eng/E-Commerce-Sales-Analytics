@@ -35,9 +35,8 @@ print(f"Loaded {len(df)} rows from database")
 
 
 # ============================================
-# 2. CREATE WEB/DATA AND WEB/PUBLIC/DATA DIRECTORIES
+# 2. CREATE WEB/PUBLIC/DATA DIRECTORY
 # ============================================
-os.makedirs("web/data", exist_ok=True)
 os.makedirs("web/public/data", exist_ok=True)
 
 
@@ -59,9 +58,6 @@ summary = {
     "date_range_start": df["order_date"].min().strftime("%Y-%m-%d"),
     "date_range_end": df["order_date"].max().strftime("%Y-%m-%d")
 }
-
-with open("web/data/summary.json", "w") as f:
-    json.dump(summary, f, indent=2)
 
 with open("web/public/data/summary.json", "w") as f:
     json.dump(summary, f, indent=2)
@@ -88,9 +84,6 @@ category_df = df.groupby("product_category").agg(
 
 category_data = category_df.to_dict("records")
 
-with open("web/data/category.json", "w") as f:
-    json.dump(category_data, f, indent=2)
-
 with open("web/public/data/category.json", "w") as f:
     json.dump(category_data, f, indent=2)
 
@@ -112,9 +105,6 @@ region_df = df.groupby("region").agg(
 ).round(2).reset_index()
 
 region_data = region_df.to_dict("records")
-
-with open("web/data/region.json", "w") as f:
-    json.dump(region_data, f, indent=2)
 
 with open("web/public/data/region.json", "w") as f:
     json.dump(region_data, f, indent=2)
@@ -140,9 +130,6 @@ payment_df["average_order_revenue"] = round(payment_df["revenue"] / payment_df["
 
 payment_data = payment_df.to_dict("records")
 
-with open("web/data/payment.json", "w") as f:
-    json.dump(payment_data, f, indent=2)
-
 with open("web/public/data/payment.json", "w") as f:
     json.dump(payment_data, f, indent=2)
 
@@ -164,9 +151,6 @@ yearly_df = df.groupby("year").agg(
 yearly_df = yearly_df.sort_values("year")
 
 yearly_data = yearly_df.to_dict("records")
-
-with open("web/data/yearly.json", "w") as f:
-    json.dump(yearly_data, f, indent=2)
 
 with open("web/public/data/yearly.json", "w") as f:
     json.dump(yearly_data, f, indent=2)
@@ -197,9 +181,6 @@ monthly_df["month_name"] = monthly_df["month"].map(month_names)
 
 monthly_data = monthly_df.to_dict("records")
 
-with open("web/data/monthly.json", "w") as f:
-    json.dump(monthly_data, f, indent=2)
-
 with open("web/public/data/monthly.json", "w") as f:
     json.dump(monthly_data, f, indent=2)
 
@@ -223,9 +204,6 @@ customer_df = df.groupby("customer_id").agg(
 customer_df = customer_df.sort_values("total_revenue", ascending=False)
 
 customer_data = customer_df.to_dict("records")
-
-with open("web/data/customers.json", "w") as f:
-    json.dump(customer_data, f, indent=2)
 
 with open("web/public/data/customers.json", "w") as f:
     json.dump(customer_data, f, indent=2)
@@ -271,9 +249,6 @@ operations = {
     "rating_by_region": rating_region
 }
 
-with open("web/data/operations.json", "w") as f:
-    json.dump(operations, f, indent=2)
-
 with open("web/public/data/operations.json", "w") as f:
     json.dump(operations, f, indent=2)
 
@@ -310,9 +285,6 @@ relationships = {
     }
 }
 
-with open("web/data/relationships.json", "w") as f:
-    json.dump(relationships, f, indent=2)
-
 with open("web/public/data/relationships.json", "w") as f:
     json.dump(relationships, f, indent=2)
 
@@ -341,7 +313,7 @@ json_files = [
 
 all_json_valid = True
 for filename in json_files:
-    filepath = f"web/data/{filename}"
+    filepath = f"web/public/data/{filename}"
     try:
         with open(filepath, "r") as f:
             data = json.load(f)
@@ -390,6 +362,6 @@ print("\n" + "=" * 60)
 print("DASHBOARD DATA GENERATION COMPLETE")
 print("=" * 60)
 
-print(f"\nFiles created in web/data/:")
+print(f"\nFiles created in web/public/data/:")
 for filename in json_files:
     print(f"  - {filename}")
