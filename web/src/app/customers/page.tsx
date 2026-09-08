@@ -7,6 +7,7 @@ import CustomerRevenueChart from '@/components/charts/CustomerRevenueChart';
 import OrdersPerCustomer from '@/components/charts/OrdersPerCustomer';
 import CustomerRankingTable from '@/components/dashboard/CustomerRankingTable';
 import DatasetGuard from '@/components/dashboard/DatasetGuard';
+import { useDashboardDataAll } from '@/lib/hooks/useDashboardData';
 import {
   Users,
   ShoppingCart,
@@ -15,7 +16,7 @@ import {
   Percent,
   DollarSign,
 } from 'lucide-react';
-import { useEffect, useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { formatINR, formatINRDetailed, formatNumber } from '@/lib/utils/format';
 
@@ -37,27 +38,18 @@ interface SummaryData {
   total_quantity: number;
 }
 
-function CustomersContent() {
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [summary, setSummary] = useState<SummaryData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface CustomersPageData {
+  customers: Customer[];
+  summary: SummaryData;
+}
 
-  useEffect(() => {
-    Promise.all([
-      fetch('/data/customers.json').then((res) => res.json()),
-      fetch('/data/summary.json').then((res) => res.json()),
-    ])
-      .then(([customersData, summaryData]) => {
-        setCustomers(customersData);
-        setSummary(summaryData);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Unable to load customer data.');
-        setLoading(false);
-      });
-  }, []);
+function CustomersContent() {
+  const { data, loading, error } = useDashboardDataAll<CustomersPageData>([
+    'customers', 'summary'
+  ]);
+
+  const customers = useMemo(() => data?.customers ?? [], [data?.customers]);
+  const summary = data?.summary ?? null;
 
   const metrics = useMemo(() => {
     if (customers.length === 0 || !summary) return null;

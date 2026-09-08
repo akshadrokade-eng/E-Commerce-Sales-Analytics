@@ -17,7 +17,7 @@ import {
   Hash,
   Users,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useDashboardDataAll } from '@/lib/hooks/useDashboardData';
 import { motion } from 'framer-motion';
 import {
   SummaryData,
@@ -29,39 +29,26 @@ import {
 } from '@/types';
 import { formatINR, formatNumber } from '@/lib/utils/format';
 
-function SalesContent() {
-  const [summary, setSummary] = useState<SummaryData | null>(null);
-  const [categories, setCategories] = useState<CategoryData[]>([]);
-  const [regions, setRegions] = useState<RegionData[]>([]);
-  const [monthly, setMonthly] = useState<MonthlyData[]>([]);
-  const [payment, setPayment] = useState<PaymentData[]>([]);
-  const [yearly, setYearly] = useState<YearlyData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface SalesData {
+  summary: SummaryData;
+  category: CategoryData[];
+  region: RegionData[];
+  monthly: MonthlyData[];
+  payment: PaymentData[];
+  yearly: YearlyData[];
+}
 
-  useEffect(() => {
-    Promise.all([
-      fetch('/data/summary.json').then((res) => res.json()),
-      fetch('/data/category.json').then((res) => res.json()),
-      fetch('/data/region.json').then((res) => res.json()),
-      fetch('/data/monthly.json').then((res) => res.json()),
-      fetch('/data/payment.json').then((res) => res.json()),
-      fetch('/data/yearly.json').then((res) => res.json()),
-    ])
-      .then(([summaryData, categoryData, regionData, monthlyData, paymentData, yearlyData]) => {
-        setSummary(summaryData);
-        setCategories(categoryData);
-        setRegions(regionData);
-        setMonthly(monthlyData);
-        setPayment(paymentData);
-        setYearly(yearlyData);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Unable to load sales data.');
-        setLoading(false);
-      });
-  }, []);
+function SalesContent() {
+  const { data, loading, error } = useDashboardDataAll<SalesData>([
+    'summary', 'category', 'region', 'monthly', 'payment', 'yearly'
+  ]);
+
+  const summary = data?.summary ?? null;
+  const categories = data?.category ?? [];
+  const regions = data?.region ?? [];
+  const monthly = data?.monthly ?? [];
+  const payment = data?.payment ?? [];
+  const yearly = data?.yearly ?? [];
 
   if (loading) {
     return (

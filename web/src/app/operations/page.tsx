@@ -9,6 +9,7 @@ import RatingDistribution from '@/components/charts/RatingDistribution';
 import CategoryRating from '@/components/charts/CategoryRating';
 import DeliveryRatingScatter from '@/components/charts/DeliveryRatingScatter';
 import DatasetGuard from '@/components/dashboard/DatasetGuard';
+import { useDashboardDataAll } from '@/lib/hooks/useDashboardData';
 import {
   Truck,
   Star,
@@ -17,7 +18,6 @@ import {
   AlertTriangle,
   Users,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { formatNumber } from '@/lib/utils/format';
 
@@ -44,30 +44,20 @@ interface SummaryData {
   average_customer_rating: number;
 }
 
-function OperationsContent() {
-  const [operations, setOperations] = useState<OperationsData | null>(null);
-  const [relationships, setRelationships] = useState<RelationshipsData | null>(null);
-  const [summary, setSummary] = useState<SummaryData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface OperationsPageData {
+  operations: OperationsData;
+  relationships: RelationshipsData;
+  summary: SummaryData;
+}
 
-  useEffect(() => {
-    Promise.all([
-      fetch('/data/operations.json').then((res) => res.json()),
-      fetch('/data/relationships.json').then((res) => res.json()),
-      fetch('/data/summary.json').then((res) => res.json()),
-    ])
-      .then(([operationsData, relationshipsData, summaryData]) => {
-        setOperations(operationsData);
-        setRelationships(relationshipsData);
-        setSummary(summaryData);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Unable to load operations data.');
-        setLoading(false);
-      });
-  }, []);
+function OperationsContent() {
+  const { data, loading, error } = useDashboardDataAll<OperationsPageData>([
+    'operations', 'relationships', 'summary'
+  ]);
+
+  const operations = data?.operations ?? null;
+  const relationships = data?.relationships ?? null;
+  const summary = data?.summary ?? null;
 
   if (loading) {
     return (

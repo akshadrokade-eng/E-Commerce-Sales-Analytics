@@ -145,12 +145,11 @@ Next.js Analytics Dashboard
 
 ```
 E-Commerce-Sales-Analytics/
-├── data/
-│   ├── raw/                    # Original dataset files
-│   └── cleaned/                # Processed data
-├── database/                   # SQLite database files
-├── sql/                        # SQL query scripts
-├── python/                     # Python analysis scripts
+├── backend/
+│   ├── app.py                  # FastAPI backend (API + data endpoints)
+│   └── .env.example            # Backend environment variables
+├── python/
+│   ├── process_dataset.py      # CSV upload processing pipeline
 │   ├── 00_data_profiling.py
 │   ├── 01_create_database.py
 │   ├── 02_verify_database.py
@@ -159,19 +158,18 @@ E-Commerce-Sales-Analytics/
 │   ├── 05_matplotlib_visualizations.py
 │   ├── 06_seaborn_visualizations.py
 │   └── 07_generate_dashboard_data.py
-├── outputs/
-│   ├── plots/                  # Saved chart images
-│   ├── insights/               # Text insights
-│   └── *.csv                   # Analysis outputs
+├── data/
+│   ├── raw/                    # Original dataset files
+│   ├── cleaned/                # Processed data
+│   └── runtime/                # Runtime JSON (gitignored)
 ├── web/
-│   ├── public/data/            # Dashboard JSON files
-│   └── src/
-│       ├── app/                # Next.js pages
-│       ├── components/         # React components
-│       ├── lib/                # Utilities and data
-│       └── types/              # TypeScript types
-├── report/
-│   └── data_dictionary.md
+│   ├── src/
+│   │   ├── app/                # Next.js pages
+│   │   ├── components/         # React components
+│   │   └── lib/                # Utilities, hooks, API config
+│   ├── .env.example            # Frontend environment variables
+│   └── next.config.ts          # Static export for Cloudflare
+├── Procfile                    # Railway deployment config
 ├── requirements.txt
 └── README.md
 ```
@@ -217,19 +215,46 @@ python python/06_seaborn_visualizations.py
 python python/07_generate_dashboard_data.py
 ```
 
-### Run the Dashboard
-```bash
-# Development mode
-cd web
-npm run dev
+### Run Locally
 
-# Production build
+**Backend (FastAPI):**
+```bash
+cd backend
+pip install -r ../requirements.txt
+uvicorn backend.app:app --host 127.0.0.1 --port 8000
+```
+
+**Frontend (Next.js):**
+```bash
 cd web
-npm run build
-npm start
+npm install
+NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
+
+### Deploy to Production
+
+**Frontend (Cloudflare Pages):**
+```bash
+cd web
+NEXT_PUBLIC_API_URL=https://your-backend.up.railway.app npm run build
+# Deploy web/out/ directory to Cloudflare Pages
+```
+
+**Backend (Railway):**
+```bash
+# Push to GitHub — Railway auto-deploys from Procfile
+# Or manually:
+railway up
+```
+
+**Environment Variables (Railway):**
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `FRONTEND_URL` | Cloudflare Pages URL | `https://your-app.pages.dev` |
+| `PORT` | Server port (auto-set) | `8000` |
+| `DATA_DIR` | Runtime data directory | `data/runtime` |
 
 ## Dashboard Routes
 

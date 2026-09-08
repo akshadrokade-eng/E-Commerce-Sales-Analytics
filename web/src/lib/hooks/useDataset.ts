@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-
-const API_BASE = 'http://127.0.0.1:8000';
+import { api } from '@/lib/api';
 
 interface DatasetInfo {
   has_dataset: boolean;
@@ -27,7 +26,7 @@ function fetchDataset(
   setError: (v: string | null) => void,
   setLoading: (v: boolean) => void
 ) {
-  fetch(`${API_BASE}/api/dataset`)
+  fetch(api.dataset)
     .then((res) => res.json())
     .then((data) => {
       if (data.success) {

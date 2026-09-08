@@ -4,6 +4,7 @@ import Header from '@/components/layout/Header';
 import KPICard from '@/components/dashboard/KPICard';
 import InsightCard from '@/components/dashboard/InsightCard';
 import DatasetGuard from '@/components/dashboard/DatasetGuard';
+import { useDashboardDataAll } from '@/lib/hooks/useDashboardData';
 import {
   DollarSign,
   ShoppingCart,
@@ -19,7 +20,6 @@ import {
   Info,
   Lightbulb,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { formatINR, formatINRDetailed, formatNumber, formatCorrelation, getCorrelationStrength, getCorrelationDirection } from '@/lib/utils/format';
 
@@ -72,45 +72,30 @@ interface RelationshipsData {
   };
 }
 
-function InsightsContent() {
-  const [summary, setSummary] = useState<SummaryData | null>(null);
-  const [categories, setCategories] = useState<CategoryData[]>([]);
-  const [regions, setRegions] = useState<RegionData[]>([]);
-  const [payment, setPayment] = useState<PaymentData[]>([]);
-  const [yearly, setYearly] = useState<YearlyData[]>([]);
-  const [customers, setCustomers] = useState<CustomerData[]>([]);
-  const [operations, setOperations] = useState<OperationsData | null>(null);
-  const [relationships, setRelationships] = useState<RelationshipsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface InsightsPageData {
+  summary: SummaryData;
+  category: CategoryData[];
+  region: RegionData[];
+  payment: PaymentData[];
+  yearly: YearlyData[];
+  customers: CustomerData[];
+  operations: OperationsData;
+  relationships: RelationshipsData;
+}
 
-  useEffect(() => {
-    Promise.all([
-      fetch('/data/summary.json').then((res) => res.json()),
-      fetch('/data/category.json').then((res) => res.json()),
-      fetch('/data/region.json').then((res) => res.json()),
-      fetch('/data/payment.json').then((res) => res.json()),
-      fetch('/data/yearly.json').then((res) => res.json()),
-      fetch('/data/customers.json').then((res) => res.json()),
-      fetch('/data/operations.json').then((res) => res.json()),
-      fetch('/data/relationships.json').then((res) => res.json()),
-    ])
-      .then(([s, c, r, p, y, cu, o, re]) => {
-        setSummary(s);
-        setCategories(c);
-        setRegions(r);
-        setPayment(p);
-        setYearly(y);
-        setCustomers(cu);
-        setOperations(o);
-        setRelationships(re);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Unable to load insights data.');
-        setLoading(false);
-      });
-  }, []);
+function InsightsContent() {
+  const { data, loading, error } = useDashboardDataAll<InsightsPageData>([
+    'summary', 'category', 'region', 'payment', 'yearly', 'customers', 'operations', 'relationships'
+  ]);
+
+  const summary = data?.summary ?? null;
+  const categories = data?.category ?? [];
+  const regions = data?.region ?? [];
+  const payment = data?.payment ?? [];
+  const yearly = data?.yearly ?? [];
+  const customers = data?.customers ?? [];
+  const operations = data?.operations ?? null;
+  const relationships = data?.relationships ?? null;
 
   if (loading) {
     return (

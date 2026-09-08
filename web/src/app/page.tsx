@@ -16,7 +16,7 @@ import {
   Users,
   TrendingUp,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useDashboardDataAll } from '@/lib/hooks/useDashboardData';
 import {
   SummaryData,
   CategoryData,
@@ -27,39 +27,26 @@ import {
 } from '@/types';
 import { formatINR, formatNumber } from '@/lib/utils/format';
 
-function DashboardContent() {
-  const [summary, setSummary] = useState<SummaryData | null>(null);
-  const [categories, setCategories] = useState<CategoryData[]>([]);
-  const [regions, setRegions] = useState<RegionData[]>([]);
-  const [monthly, setMonthly] = useState<MonthlyData[]>([]);
-  const [payment, setPayment] = useState<PaymentData[]>([]);
-  const [relationships, setRelationships] = useState<RelationshipsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface DashboardData {
+  summary: SummaryData;
+  category: CategoryData[];
+  region: RegionData[];
+  monthly: MonthlyData[];
+  payment: PaymentData[];
+  relationships: RelationshipsData;
+}
 
-  useEffect(() => {
-    Promise.all([
-      fetch('/data/summary.json').then((res) => res.json()),
-      fetch('/data/category.json').then((res) => res.json()),
-      fetch('/data/region.json').then((res) => res.json()),
-      fetch('/data/monthly.json').then((res) => res.json()),
-      fetch('/data/payment.json').then((res) => res.json()),
-      fetch('/data/relationships.json').then((res) => res.json()),
-    ])
-      .then(([summaryData, categoryData, regionData, monthlyData, paymentData, relationshipsData]) => {
-        setSummary(summaryData);
-        setCategories(categoryData);
-        setRegions(regionData);
-        setMonthly(monthlyData);
-        setPayment(paymentData);
-        setRelationships(relationshipsData);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Unable to load dashboard data.');
-        setLoading(false);
-      });
-  }, []);
+function DashboardContent() {
+  const { data, loading, error } = useDashboardDataAll<DashboardData>([
+    'summary', 'category', 'region', 'monthly', 'payment', 'relationships'
+  ]);
+
+  const summary = data?.summary ?? null;
+  const categories = data?.category ?? [];
+  const regions = data?.region ?? [];
+  const monthly = data?.monthly ?? [];
+  const payment = data?.payment ?? [];
+  const relationships = data?.relationships ?? null;
 
   if (loading) {
     return (
