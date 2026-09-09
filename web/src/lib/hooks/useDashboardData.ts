@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { api } from '@/lib/api';
+import { api, fetchWithSession } from '@/lib/api';
 
 type DataKey = 'summary' | 'category' | 'region' | 'payment' | 'yearly' | 'monthly' | 'customers' | 'operations' | 'relationships' | 'metadata';
 
@@ -18,7 +18,7 @@ export function useDashboardData<T>(key: DataKey): UseDashboardDataResult<T> {
 
   useEffect(() => {
     const url = api.data[key];
-    fetch(url)
+    fetchWithSession(url)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
@@ -49,7 +49,7 @@ export function useDashboardDataAll<T>(
 
   useEffect(() => {
     const urls = keys.map((k) => api.data[k]);
-    Promise.all(urls.map((url) => fetch(url).then((res) => {
+    Promise.all(urls.map((url) => fetchWithSession(url).then((res) => {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
     })))

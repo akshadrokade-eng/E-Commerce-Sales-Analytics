@@ -1,3 +1,5 @@
+import { getSessionId } from '@/lib/session';
+
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export const api = {
@@ -19,3 +21,9 @@ export const api = {
     metadata: `${API_BASE_URL}/api/data/metadata`,
   },
 };
+
+export function fetchWithSession(url: string, init?: RequestInit): Promise<Response> {
+  const headers = new Headers(init?.headers);
+  headers.set('X-Session-ID', getSessionId());
+  return fetch(url, { ...init, headers });
+}

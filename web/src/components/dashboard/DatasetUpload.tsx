@@ -11,7 +11,7 @@ import {
   RotateCcw,
   Database,
 } from 'lucide-react';
-import { api } from '@/lib/api';
+import { api, fetchWithSession } from '@/lib/api';
 
 interface DatasetMetadata {
   filename: string;
@@ -87,7 +87,7 @@ export default function DatasetUpload({ autoOpen = false, onClose, onSuccess }: 
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch(api.preview, {
+      const response = await fetchWithSession(api.preview, {
         method: 'POST',
         body: formData,
       });
@@ -119,7 +119,7 @@ export default function DatasetUpload({ autoOpen = false, onClose, onSuccess }: 
       setTimeout(() => setState('validating'), 500);
       setTimeout(() => setState('processing'), 1000);
 
-      const response = await fetch(api.upload, {
+      const response = await fetchWithSession(api.upload, {
         method: 'POST',
         body: formData,
       });
@@ -146,7 +146,7 @@ export default function DatasetUpload({ autoOpen = false, onClose, onSuccess }: 
   const handleReset = useCallback(async () => {
     setState('uploading');
     try {
-      const response = await fetch(api.reset, {
+      const response = await fetchWithSession(api.reset, {
         method: 'POST',
       });
 

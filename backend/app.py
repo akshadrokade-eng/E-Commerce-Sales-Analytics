@@ -3,13 +3,15 @@ E-Commerce Analytics Backend API
 ================================
 A lightweight FastAPI server for dataset upload and processing.
 
+Datasets are stored in-memory and keyed by browser-tab session ID (X-Session-ID header).
+Data is NOT persisted to disk — closing the tab or restarting the server clears everything.
+
 Run:
     uvicorn backend.app:app --host 0.0.0.0 --port 8000
 
 Environment variables:
     FRONTEND_URL  - Allowed CORS origin (default: http://localhost:3000)
     PORT          - Server port (default: 8000)
-    DATA_DIR      - Runtime data directory (default: data/runtime)
 """
 
 import os
@@ -18,12 +20,12 @@ import json
 import shutil
 import tempfile
 from datetime import datetime
+from typing import Optional
 
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-# Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from python.process_dataset import process_csv, get_preview_data
@@ -35,7 +37,6 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Environment-based CORS
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000")
 app.add_middleware(
     CORSMiddleware,
@@ -45,40 +46,39 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configurable data directory
-DATA_DIR = os.environ.get("DATA_DIR", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "runtime"))
-METADATA_FILE = os.path.join(DATA_DIR, "metadata.json")
-
-# Dashboard JSON file names
 DASHBOARD_FILES = [
     "summary.json", "category.json", "region.json", "payment.json",
     "yearly.json", "monthly.json", "customers.json", "operations.json",
     "relationships.json",
 ]
 
+# In-memory session store: session_id -> { "metadata": {...}, "data": { "summary.json": [...], ... } }
+_sessions: dict[str, dict] = {}
+
+
+def _get_session_id(request: Request) -> str:
+    sid = request.headers.get("X-Session-ID", "")
+    if not sid:
+        raise HTTPException(status_code=400, detail={"success": False, "message": "Missing X-Session-ID header"})
+    return sid
+
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
     return {"status": "ok", "timestamp": datetime.now().isoformat()}
 
 
 @app.get("/api/dataset")
-async def get_dataset_info():
-    """Get information about the currently loaded dataset."""
-    if os.path.exists(METADATA_FILE):
-        try:
-            with open(METADATA_FILE, "r") as f:
-                metadata = json.load(f)
-            return {"success": True, "has_dataset": True, "metadata": metadata}
-        except Exception:
-            return {"success": True, "has_dataset": False, "metadata": None, "message": "Corrupted metadata"}
+async def get_dataset_info(request: Request):
+    sid = _get_session_id(request)
+    session = _sessions.get(sid)
+    if session and "metadata" in session:
+        return {"success": True, "has_dataset": True, "metadata": session["metadata"]}
     return {"success": True, "has_dataset": False, "metadata": None, "message": "No dataset loaded"}
 
 
 @app.post("/api/preview")
 async def preview_dataset(file: UploadFile = File(...)):
-    """Preview a CSV file without processing it."""
     if not file.filename.lower().endswith(".csv"):
         raise HTTPException(status_code=400, detail={"success": False, "message": "Please select a CSV file."})
 
@@ -105,8 +105,9 @@ async def preview_dataset(file: UploadFile = File(...)):
 
 
 @app.post("/api/upload")
-async def upload_dataset(file: UploadFile = File(...)):
-    """Upload and process a CSV dataset with atomic replacement."""
+async def upload_dataset(request: Request, file: UploadFile = File(...)):
+    sid = _get_session_id(request)
+
     if not file.filename.lower().endswith(".csv"):
         return JSONResponse(status_code=400, content={"success": False, "message": "Please select a CSV file."})
 
@@ -121,7 +122,6 @@ async def upload_dataset(file: UploadFile = File(...)):
         if file_size == 0:
             return JSONResponse(status_code=400, content={"success": False, "message": "The dataset is empty."})
 
-        # Process to a temporary output directory first (atomic update)
         temp_output = tempfile.mkdtemp()
         result = process_csv(temp_path, temp_output)
 
@@ -129,25 +129,21 @@ async def upload_dataset(file: UploadFile = File(...)):
             shutil.rmtree(temp_output, ignore_errors=True)
             return JSONResponse(status_code=400, content=result)
 
-        # Only replace active data after successful processing
-        os.makedirs(DATA_DIR, exist_ok=True)
-
-        # Remove old dashboard files
-        for fname in DASHBOARD_FILES + ["metadata.json"]:
-            old_path = os.path.join(DATA_DIR, fname)
-            if os.path.exists(old_path):
-                os.remove(old_path)
-
-        # Move new files into DATA_DIR
+        # Read all generated JSON files into memory
+        session_data: dict[str, list | dict] = {}
         for fname in os.listdir(temp_output):
-            src = os.path.join(temp_output, fname)
-            dst = os.path.join(DATA_DIR, fname)
-            shutil.move(src, dst)
+            fpath = os.path.join(temp_output, fname)
+            with open(fpath, "r") as f:
+                session_data[fname] = json.load(f)
 
         shutil.rmtree(temp_output, ignore_errors=True)
 
-        # Update metadata filename
+        # Store in session
         result["metadata"]["filename"] = file.filename
+        _sessions[sid] = {
+            "metadata": result["metadata"],
+            "data": session_data,
+        }
 
         return result
 
@@ -158,83 +154,69 @@ async def upload_dataset(file: UploadFile = File(...)):
 
 
 @app.post("/api/reset")
-async def reset_dataset():
-    """Remove the active dataset and clear all generated JSON files."""
-    try:
-        all_files = DASHBOARD_FILES + ["metadata.json"]
-        removed_count = 0
-        for filename in all_files:
-            filepath = os.path.join(DATA_DIR, filename)
-            if os.path.exists(filepath):
-                os.remove(filepath)
-                removed_count += 1
-
-        return {"success": True, "message": f"Dataset removed. {removed_count} files cleared.", "has_dataset": False}
-
-    except Exception as e:
-        return JSONResponse(status_code=500, content={"success": False, "message": f"Reset failed: {str(e)}"})
+async def reset_dataset(request: Request):
+    sid = _get_session_id(request)
+    if sid in _sessions:
+        del _sessions[sid]
+    return {"success": True, "message": "Dataset removed.", "has_dataset": False}
 
 
-def _read_json(filename: str):
-    """Read a JSON file from DATA_DIR, returning 404 if not found."""
-    filepath = os.path.join(DATA_DIR, filename)
-    if not os.path.exists(filepath):
+def _read_session_data(request: Request, filename: str):
+    sid = _get_session_id(request)
+    session = _sessions.get(sid)
+    if not session or "data" not in session or filename not in session["data"]:
         raise HTTPException(status_code=404, detail={"success": False, "message": "No dataset available"})
-    try:
-        with open(filepath, "r") as f:
-            return json.load(f)
-    except Exception:
-        raise HTTPException(status_code=500, detail={"success": False, "message": "Error reading data file"})
+    return session["data"][filename]
 
 
 @app.get("/api/data/summary")
-async def get_summary():
-    return _read_json("summary.json")
+async def get_summary(request: Request):
+    return _read_session_data(request, "summary.json")
 
 
 @app.get("/api/data/category")
-async def get_category():
-    return _read_json("category.json")
+async def get_category(request: Request):
+    return _read_session_data(request, "category.json")
 
 
 @app.get("/api/data/region")
-async def get_region():
-    return _read_json("region.json")
+async def get_region(request: Request):
+    return _read_session_data(request, "region.json")
 
 
 @app.get("/api/data/payment")
-async def get_payment():
-    return _read_json("payment.json")
+async def get_payment(request: Request):
+    return _read_session_data(request, "payment.json")
 
 
 @app.get("/api/data/yearly")
-async def get_yearly():
-    return _read_json("yearly.json")
+async def get_yearly(request: Request):
+    return _read_session_data(request, "yearly.json")
 
 
 @app.get("/api/data/monthly")
-async def get_monthly():
-    return _read_json("monthly.json")
+async def get_monthly(request: Request):
+    return _read_session_data(request, "monthly.json")
 
 
 @app.get("/api/data/customers")
-async def get_customers():
-    return _read_json("customers.json")
+async def get_customers(request: Request):
+    return _read_session_data(request, "customers.json")
 
 
 @app.get("/api/data/operations")
-async def get_operations():
-    return _read_json("operations.json")
+async def get_operations(request: Request):
+    return _read_session_data(request, "operations.json")
 
 
 @app.get("/api/data/relationships")
-async def get_relationships():
-    return _read_json("relationships.json")
+async def get_relationships(request: Request):
+    return _read_session_data(request, "relationships.json")
 
 
 @app.get("/api/data/metadata")
-async def get_metadata():
-    return _read_json("metadata.json")
+async def get_metadata(request: Request):
+    return _read_session_data(request, "metadata.json")
 
 
 if __name__ == "__main__":
