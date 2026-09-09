@@ -1,20 +1,11 @@
-const SESSION_KEY = '__ecommerce_session_id';
-
-function generateSessionId(): string {
-  return crypto.randomUUID();
-}
-
-function getOrCreateSessionId(): string {
-  if (typeof window === 'undefined') return generateSessionId();
-
-  let sessionId = sessionStorage.getItem(SESSION_KEY);
-  if (!sessionId) {
-    sessionId = generateSessionId();
-    sessionStorage.setItem(SESSION_KEY, sessionId);
-  }
-  return sessionId;
-}
+let _sessionId: string | null = null;
 
 export function getSessionId(): string {
-  return getOrCreateSessionId();
+  if (typeof window === 'undefined') {
+    return 'server-ssr';
+  }
+  if (!_sessionId) {
+    _sessionId = crypto.randomUUID();
+  }
+  return _sessionId;
 }
