@@ -2,6 +2,10 @@
 
 A comprehensive analytics project analyzing e-commerce sales data, customer behavior, and operational performance through an interactive Next.js dashboard.
 
+## Live Demo
+
+https://e-commerce-sales-analytics.pages.dev/
+
 ## Project Overview
 
 This project processes raw e-commerce sales data through a complete analytics pipeline — from data profiling and database creation to SQL analysis, Python-based statistical analysis, and a premium interactive web dashboard built with Next.js, React, and TypeScript.
