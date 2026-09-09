@@ -4,7 +4,7 @@ A comprehensive analytics project analyzing e-commerce sales data, customer beha
 
 ## Live Demo
 
-https://e-commerce-sales-analytics.pages.dev/
+e-commerce-sales-analytics.pages.dev
 
 ## Project Overview
 
